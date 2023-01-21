@@ -1,6 +1,8 @@
 #
-# s'il n'y a pas de lien urgent à couper, couper les liens des noeuds connectés directement 
-# à plusieurs portes car ils ne seront pas gérables si le virus atteint ce noeud
+# s'il n'y a pas de lien urgent à couper (porte présente sur un chemin de profondeur 1), 
+# alors couper les liens des noeuds connectés directement à plusieurs portes car ils ne seront pas gérables si le virus atteint ce noeud
+# pb conséquent : gérer les portes présentes sur les chemins de profondeur 2, définir une priorisaton entre le lien urgentProfondeur2 
+# et le noeud chargé en fonction de la distance de celui-ci
 
 
 
