@@ -5,6 +5,9 @@
 # et le noeud chargé en fonction de la distance de celui-ci
 
 
+# reprendre les chemins possibles pour chaque profondeur, analyser le neoud final de chacun et le catégoriser en fonction de la politique des priorités
+
+
 
 import sys
 from collections import Counter
