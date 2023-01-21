@@ -80,7 +80,6 @@ def liensSensibles(si,prof):
         for porte in portes:
             if porte in c:
                 # alerte car une porte se trouve sur un chemin !
-                # pour le moment on se contente de couper le lien associé à l'alerte
                 chemin = c[-2:]
                 lien   = lienDuChemin(chemin)
                 porte  = porteDuLien(lien)
@@ -94,7 +93,6 @@ def liensSensibles(si,prof):
                     # , file=sys.stderr, flush=True)
 
                 res.append(lien)
-    # print("res : " + str(res), file=sys.stderr, flush=True)
     return res
     
 
@@ -124,7 +122,7 @@ def lienPrioritaire(liens):
         if charges.count(max(charges)) == 1:
             return liens[charges.index(max(charges))]
         else:
-            # s'il y'a des charges max et égales, alors il faut prioriser autrement :
+            # s'il y'a des charges max égales, alors il faut prioriser autrement :
             # parmi les liens, chercher les noeuds qui possèdent le + de liens vers des portes
             noeudsTemp = []
             for lien in liens:
