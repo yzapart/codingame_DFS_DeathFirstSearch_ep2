@@ -7,8 +7,6 @@
 
 # reprendre les chemins possibles pour chaque profondeur, analyser le neoud final de chacun et le catégoriser en fonction de la politique des priorités
 
-
-
 import sys
 from collections import Counter
 
@@ -21,23 +19,26 @@ from collections import Counter
 n, l, e = [int(i) for i in input().split()]
 liens  = []
 portes = []
+noeuds = []
+print("n: " + str(n), file=sys.stderr, flush=True)
 
 for i in range(l):
     # n1: N1 and N2 defines a link between these nodes
     n1, n2 = [int(j) for j in input().split()]
     liens.append([n1,n2])
 
+
 for i in range(e):
     ei = int(input())  # the index of a gateway node
     portes.append(ei)
 
-noeuds = []
 for i in range(n):
     noeuds.append(i)
 for lien in liens:
     for noeud in noeuds:
         if noeud in portes:
             noeuds.remove(noeud)
+
 
 def liensDuNoeud(noeud):
     res = []
@@ -70,6 +71,7 @@ def porteDuLien(lien):
         if noeud in portes:
             return noeud
 
+
 def cheminsPossibles(noeud, prof):
     res = [[noeud]]
     for i in range(prof):
@@ -77,31 +79,37 @@ def cheminsPossibles(noeud, prof):
         res = []
         for chemin in chemins:
             for c in cheminsDuNoeud(chemin[-1]):
-                res.append(reductionChemin(chemin+c))
-    return res
+                res.append(chemin+c)
+    for i,chemin in enumerate(res):
+        chemin.pop(0)
+        res[i] = reductionChemin(chemin)
+    return (res)
     
 def printLien(lien):
     print(str(lien[0]) + " " + str(lien[1]))
 
 
 def liensSensibles(si,prof):
-    res         = []
-    countPortes = []
+    res = []
     for c in cheminsPossibles(si,prof):
         for porte in portes:
             if porte in c:
                 # alerte car une porte se trouve sur un chemin !
-                chemin = c[-2:]
+                # pour le moment on se contente de couper le lien associé à l'alerte
+                prof   = c.index(porte)
+                chemin = c[prof-1:prof+1]
                 lien   = lienDuChemin(chemin)
                 porte  = porteDuLien(lien)
                 nbCheminsPorte = len(cheminsDuNoeud(porte))
                 # print(
-                    # "chemin sensible : " + str(c)
-                #     "\tporte : " + str(porte) +
-                #     "\tlien associé : " + str(lien) +
-                #     "\tnbCheminsPorte : " + str(nbCheminsPorte) +
-                #     " --> " + str(cheminsDuNoeud(porte))
-                    # , file=sys.stderr, flush=True)
+                    # "ch. sensible: " + str(c) +
+                    # "\tprof. : " + str(prof) +
+                    # "\tporte : " + str(porte) +
+                    # "\tlien associé : " + str(lien) +
+                    # # "\tnbCheminsPorte : " + str(nbCheminsPorte) +
+                    # " --> " + str(cheminsDuNoeud(porte))
+#                     , file=sys.stderr, flush=True
+                    # )
 
                 res.append(lien)
     return res
@@ -112,13 +120,19 @@ def noeudDuLienDeLaPorte(lien):
         if (noeud in portes == False):
             return noeud
 
+def noeudDirectPorte(noeud):
+    for lien in liens:
+        if noeud in lien:
+            if noeud not in portes:
+                for porte in portes:
+                    if porte in lien:
+                        return True
+    return False
 
 def most_common_value(lst):
     count = Counter(lst)
     return max(count, key=count.get)
 
-
-# =============================== mal écrit ou mal utilisé
 def lienPrioritaire(liens):
     # pas de priorité si n_portes < 5
     if e < 5:
@@ -135,7 +149,7 @@ def lienPrioritaire(liens):
         if charges.count(max(charges)) == 1:
             return liens[charges.index(max(charges))]
         else:
-            # s'il y'a des charges max égales, alors il faut prioriser autrement :
+            # s'il y'a des charges max et égales, alors il faut prioriser autrement :
             # parmi les liens, chercher les noeuds qui possèdent le + de liens vers des portes
             noeudsTemp = []
             for lien in liens:
@@ -149,18 +163,42 @@ def lienPrioritaire(liens):
                 if noeudPrioritaire in lien:
                     return lien
 
+
+def lienPrioNoeudCharge_sansUrgence(liens):
+    noeudsTemp = []
+    for lien in liens:
+        for noeud in lien:
+            if noeudDirectPorte(noeud) and noeud not in portes:
+                noeudsTemp.append(noeud)
+    print("noeudsTemp" + str(noeudsTemp), file=sys.stderr, flush=True)
+    noeudPrioritaire = most_common_value(noeudsTemp)
+    for lien in liens:
+        if noeudPrioritaire in lien:
+            return lien
+
+print(noeudDirectPorte(2), file=sys.stderr, flush=True)
+print(noeudDirectPorte(17), file=sys.stderr, flush=True)
+print(noeudDirectPorte(18), file=sys.stderr, flush=True)
+
 # game loop
 while True:
     si = int(input())  # The index of the node on which the Bobnet agent is positioned this turn
 
-    prof = 0
-    while len(liensSensibles(si, prof)) == 0:
-        prof += 1
-        # print("prof : " + str(prof), file=sys.stderr, flush=True)
 
-
-    print("sensibles : " + str(liensSensibles(si, prof)), file=sys.stderr, flush=True)
-
-    lien_a_cuter = lienPrioritaire(liensSensibles(si, prof))
+    
+    # if len(liensSensibles(si, 1)) == 0:
+    #     print("lien prio sansUrg :" + str(lienPrioNoeudCharge_sansUrgence(liens)), file=sys.stderr, flush=True)
+    #     lien_a_cuter = lienPrioNoeudCharge_sansUrgence(liens)
+    if 1 == 0:
+        aaa = 0
+    else:
+        profondeur = 0
+        while len(liensSensibles(si, profondeur)) == 0:
+            profondeur += 1
+            print("profondeur : " + str(profondeur), file=sys.stderr, flush=True)
+        lien_a_cuter = lienPrioritaire(liensSensibles(si, profondeur))
     liens.remove(lien_a_cuter)
     printLien(lien_a_cuter)
+
+
+    # print("sensibles : " + str(liensSensibles(si, profondeur)), file=sys.stderr, flush=True)
