@@ -1,3 +1,9 @@
+#
+# s'il n'y a pas de lien urgent à couper, couper les liens des noeuds connectés directement 
+# à plusieurs portes car ils ne seront pas gérables si le virus atteint ce noeud
+
+
+
 import sys
 from collections import Counter
 
