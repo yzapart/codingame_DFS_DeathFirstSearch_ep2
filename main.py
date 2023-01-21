@@ -117,6 +117,8 @@ def most_common_value(lst):
     count = Counter(lst)
     return max(count, key=count.get)
 
+
+# =============================== mal écrit ou mal utilisé
 def lienPrioritaire(liens):
     # pas de priorité si n_portes < 5
     if e < 5:
